@@ -1,0 +1,41 @@
+import numpy as np
+import math 
+import matplotlib.pyplot as plt 
+
+def myfun_ty(t,y):
+    return t-y
+
+# Start and end of interval
+b=2
+a=0
+# Step size
+N=4
+h=(b-a)/(N)
+t=np.arange(a,b+h,h)
+
+IC=1 # Intial condtion
+y=(IC+1)*np.exp(-t)+t-1
+
+w=np.zeros(N+1)
+w[0]=IC
+
+w=np.zeros(len(t))
+w0=np.zeros(len(t))
+w[0]=IC
+w[1]=y[1]
+w0[0]=IC
+w0[1]=y[1]
+
+for k in range (1,N):
+    w0[k+1]=(w[k]+h/2.0*(3*myfun_ty(t[k],w[k])-myfun_ty(t[k-1],w[k-1])))   
+    w[k+1]=(w[k]+h/2.0*(myfun_ty(t[k+1],w0[k+1])+myfun_ty(t[k],w[k])))   
+
+def plotting(t,w,w0,y):
+    fig = plt.figure(figsize=(6,4))
+    plt.plot(t,y, 'o-',color='black',label='Exact')
+    plt.plot(t,w0,'v:',color='blue',label='Adams-Bashforth Predictor')
+    plt.plot(t,w,'^:',color='red',label='Adams-Moulton Corrector')
+    plt.xlabel('time')
+    plt.legend()
+    plt.show 
+plotting(t,w,w0,y)
